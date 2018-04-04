@@ -1,4 +1,10 @@
 defmodule Depot.Adapters.Memory do
+  @moduledoc """
+  In memory implementation of a (naive) filesystem. 
+
+  Does currently store files in a large `%{Path.t() => binary}` map. This should 
+  later be changed to an ordered set ets table.
+  """
   use GenServer
 
   @behaviour Depot.Adapter
@@ -7,6 +13,7 @@ defmodule Depot.Adapters.Memory do
     GenServer.start_link(__MODULE__, %{}, opts)
   end
 
+  @doc false
   def init(args), do: {:ok, args}
 
   def write(path, contents, %{pid: pid} = config) do

@@ -1,10 +1,18 @@
 defmodule Depot.Filesystem do
+  @moduledoc """
+  Does implement an adapter to represent a filesystem the user
+  can read/write files to.
+  """
   use GenServer
 
+  @doc """
+  Start up the filesystem representation
+  """
   def start_link(config) do
     GenServer.start_link(__MODULE__, config, Keyword.get(config, :otp, []))
   end
 
+  @doc false
   def init(args) do
     state =
       %{}
@@ -25,10 +33,12 @@ defmodule Depot.Filesystem do
     {:ok, Map.put(state, :config, config)}
   end
 
+  @doc "Write to the filesystem"
   def write(pid, path, contents) do
     GenServer.call(pid, {:write, {path, contents}})
   end
 
+  @doc "Write from the filesystem"
   def read(pid, path) do
     GenServer.call(pid, {:read, {path}})
   end

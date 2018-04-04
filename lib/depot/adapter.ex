@@ -1,4 +1,7 @@
 defmodule Depot.Adapter do
+  @moduledoc """
+  Behaviour for `Depot` filesystem adapters.
+  """
   @type config :: %{}
   @type path :: Path.t()
 
