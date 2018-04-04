@@ -43,11 +43,20 @@ defmodule Depot.Filesystem do
     GenServer.call(pid, {:read, {path}})
   end
 
+  def has(pid, path) do
+    GenServer.call(pid, {:has, {path}})
+  end
+
+  @doc false
   def handle_call({:write, {path, contents}}, _from, %{adapter: adapter, config: config} = state) do
     {:reply, adapter.write(path, contents, config), state}
   end
 
   def handle_call({:read, {path}}, _from, %{adapter: adapter, config: config} = state) do
     {:reply, adapter.read(path, config), state}
+  end
+
+  def handle_call({:has, {path}}, _from, %{adapter: adapter, config: config} = state) do
+    {:reply, adapter.has(path, config), state}
   end
 end

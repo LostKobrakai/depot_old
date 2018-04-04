@@ -11,4 +11,8 @@ defmodule Depot.Adapters.Local do
   def read(path, _config) do
     File.read(path)
   end
+
+  def has(path, _config) do
+    File.exists?(path)
+  end
 end

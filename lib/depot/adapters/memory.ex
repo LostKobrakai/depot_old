@@ -24,6 +24,10 @@ defmodule Depot.Adapters.Memory do
     GenServer.call(pid, {:read, {path, config}})
   end
 
+  def has(path, %{pid: pid} = config) do
+    GenServer.call(pid, {:has, {path, config}})
+  end
+
   def handle_call({:write, {path, contents, _config}}, _from, state) do
     {:reply, :ok, Map.put(state, path, IO.iodata_to_binary(contents))}
   end
@@ -32,6 +36,13 @@ defmodule Depot.Adapters.Memory do
     case Map.fetch(state, path) do
       :error -> {:reply, {:error, :enoent}, state}
       {:ok, contents} -> {:reply, {:ok, contents}, state}
+    end
+  end
+
+  def handle_call({:has, {path, _config}}, _from, state) do
+    case Map.fetch(state, path) do
+      :error -> {:reply, false, state}
+      {:ok, _} -> {:reply, true, state}
     end
   end
 end

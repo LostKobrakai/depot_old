@@ -27,5 +27,17 @@ defmodule Depot.FilesystemTest do
 
       assert {:error, _} = Filesystem.read(pid, "test/fixture/write/test.txt")
     end
+
+    test "#{inspect(adapter)}: it can report if a file does exist" do
+      {:ok, pid} = Filesystem.start_link(adapter: unquote(adapter))
+
+      path = "test/fixture/write/test.txt"
+
+      assert Filesystem.has(pid, path) == false
+
+      Filesystem.write(pid, path, "Some content")
+
+      assert Filesystem.has(pid, path) == true
+    end
   end
 end

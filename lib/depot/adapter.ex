@@ -19,8 +19,8 @@ defmodule Depot.Adapter do
   @doc "Read the contents of the file in path"
   @callback read(path, config) :: {:ok, contents :: binary} | {:error, error :: term}
 
-  # @doc "Check if a file exists"
-  # @callback has(path, config) :: boolean
+  @doc "Check if a file exists"
+  @callback has(path, config) :: boolean
 
   # @doc "Delete the file in path"
   # @callback delete(path, config) :: :ok | {:error, error :: term}
