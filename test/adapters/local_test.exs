@@ -22,4 +22,18 @@ defmodule Depot.Adapters.LocalTest do
   test "files will be read from the local filesystem" do
     assert {:ok, "Some read content"} = Local.read("test/fixture/read/test.txt", %{})
   end
+
+  describe "root config" do
+    test "files will be written to the local filesystem" do
+      path = "test.txt"
+
+      Local.write(path, "Some write content", %{root: "test/fixture/write"})
+
+      assert {:ok, "Some write content"} = File.read("test/fixture/write/test.txt")
+    end
+
+    test "files will be read from the local filesystem" do
+      assert {:ok, "Some read content"} = Local.read("test.txt", %{root: "test/fixture/read"})
+    end
+  end
 end

@@ -22,13 +22,18 @@ defmodule Depot.Filesystem do
       raise ArgumentError, "Adapter invalid or unavailable: #{inspect(state.adapter)}!"
     end
 
-    config =
+    pid_config =
       if function_exported?(state.adapter, :start_link, 1) do
         {:ok, pid} = state.adapter.start_link([])
         %{pid: pid}
       else
         %{}
       end
+
+    config =
+      args
+      |> Keyword.get(:config, %{})
+      |> Map.merge(pid_config)
 
     {:ok, Map.put(state, :config, config)}
   end

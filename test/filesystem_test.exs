@@ -40,4 +40,21 @@ defmodule Depot.FilesystemTest do
       assert Filesystem.has(pid, path) == true
     end
   end
+
+  test "config is passed to adapter" do
+    {:ok, pid} =
+      Filesystem.start_link(
+        adapter: Depot.Adapters.Local,
+        config: %{
+          root: "test/fixture/write"
+        }
+      )
+
+    path = "test.txt"
+
+    Filesystem.write(pid, "test.txt", "Some content")
+
+    assert {:ok, "Some content"} = Filesystem.read(pid, "test.txt")
+    assert {:ok, "Some content"} = File.read("test/fixture/write/test.txt")
+  end
 end
