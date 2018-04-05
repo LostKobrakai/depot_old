@@ -48,6 +48,7 @@ defmodule Depot.Filesystem do
     GenServer.call(pid, {:read, {path}})
   end
 
+  @doc "Check if a file exists at the path"
   def has(pid, path) do
     GenServer.call(pid, {:has, {path}})
   end

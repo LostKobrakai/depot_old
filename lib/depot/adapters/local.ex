@@ -5,9 +5,12 @@ defmodule Depot.Adapters.Local do
   @behaviour Depot.Adapter
 
   def write(path, contents, config) do
-    path
-    |> resolve_path(config)
-    |> File.write(contents)
+    path = resolve_path(path, config)
+    dir = Path.dirname(path)
+
+    with :ok <- File.mkdir_p(dir) do
+      File.write(path, contents)
+    end
   end
 
   def read(path, config) do

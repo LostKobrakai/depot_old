@@ -22,6 +22,16 @@ defmodule Depot.FilesystemTest do
       assert {:ok, "Some content"} = Filesystem.read(pid, path)
     end
 
+    test "#{inspect(adapter)}: directories are transparently created on writing to a file" do
+      {:ok, pid} = Filesystem.start_link(adapter: unquote(adapter))
+
+      path = "test/fixture/write/to/be/created/test.txt"
+
+      Filesystem.write(pid, path, "Some content")
+
+      assert {:ok, "Some content"} = Filesystem.read(pid, path)
+    end
+
     test "#{inspect(adapter)}: reading unavailable files results in an error" do
       {:ok, pid} = Filesystem.start_link(adapter: unquote(adapter))
 
