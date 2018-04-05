@@ -12,6 +12,38 @@ defmodule Depot.Filesystem do
     GenServer.start_link(__MODULE__, config, Keyword.get(config, :otp, []))
   end
 
+  @doc "Write to the filesystem"
+  def write(pid, path, contents) do
+    GenServer.call(pid, {:write, {path, contents}})
+  end
+
+  @doc "Write to the filesystem"
+  def update(pid, path, contents) do
+    GenServer.call(pid, {:update, {path, contents}})
+  end
+
+  # @doc "Write to the filesystem"
+  # def put(pid, path, contents) do
+  #   GenServer.call(pid, {:put, {path, contents}})
+  # end
+
+  @doc "Write from the filesystem"
+  def read(pid, path) do
+    GenServer.call(pid, {:read, {path}})
+  end
+
+  @doc "Check if a file exists at the path"
+  def has(pid, path) do
+    GenServer.call(pid, {:has, {path}})
+  end
+
+  @doc "Delete from the filesystem"
+  def delete(pid, path) do
+    GenServer.call(pid, {:delete, {path}})
+  end
+
+  # Server callbacks
+
   @doc false
   def init(args) do
     state =
@@ -38,24 +70,13 @@ defmodule Depot.Filesystem do
     {:ok, Map.put(state, :config, config)}
   end
 
-  @doc "Write to the filesystem"
-  def write(pid, path, contents) do
-    GenServer.call(pid, {:write, {path, contents}})
-  end
-
-  @doc "Write from the filesystem"
-  def read(pid, path) do
-    GenServer.call(pid, {:read, {path}})
-  end
-
-  @doc "Check if a file exists at the path"
-  def has(pid, path) do
-    GenServer.call(pid, {:has, {path}})
-  end
-
   @doc false
   def handle_call({:write, {path, contents}}, _from, %{adapter: adapter, config: config} = state) do
     {:reply, adapter.write(path, contents, config), state}
+  end
+
+  def handle_call({:update, {path, contents}}, _from, %{adapter: adapter, config: config} = state) do
+    {:reply, adapter.update(path, contents, config), state}
   end
 
   def handle_call({:read, {path}}, _from, %{adapter: adapter, config: config} = state) do
@@ -64,5 +85,9 @@ defmodule Depot.Filesystem do
 
   def handle_call({:has, {path}}, _from, %{adapter: adapter, config: config} = state) do
     {:reply, adapter.has(path, config), state}
+  end
+
+  def handle_call({:delete, {path}}, _from, %{adapter: adapter, config: config} = state) do
+    {:reply, adapter.delete(path, config), state}
   end
 end

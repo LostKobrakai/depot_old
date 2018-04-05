@@ -10,11 +10,8 @@ defmodule Depot.Adapter do
   @doc "Write contents to the file in path"
   @callback write(path, contents :: iodata, config) :: :ok | {:error, error :: term}
 
-  # @doc "Update contents of the file in path"
-  # @callback update(path, contents :: iodata, config) :: :ok | {:error, error :: term}
-
-  # @doc "Write or update contents of the file in path"
-  # @callback put(path, contents :: iodata, config) :: :ok | {:error, error :: term}
+  @doc "Update contents of the file in path"
+  @callback update(path, contents :: iodata, config) :: :ok | {:error, error :: term}
 
   @doc "Read the contents of the file in path"
   @callback read(path, config) :: {:ok, contents :: binary} | {:error, error :: term}
@@ -22,8 +19,8 @@ defmodule Depot.Adapter do
   @doc "Check if a file exists"
   @callback has(path, config) :: boolean
 
-  # @doc "Delete the file in path"
-  # @callback delete(path, config) :: :ok | {:error, error :: term}
+  @doc "Delete the file in path"
+  @callback delete(path, config) :: :ok | {:error, error :: term}
 
   # @doc "Move or rename the file in path"
   # @callback move(original :: path, new :: path, config) :: :ok | {:error, error :: term}

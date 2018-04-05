@@ -32,6 +32,19 @@ defmodule Depot.FilesystemTest do
       assert {:ok, "Some content"} = Filesystem.read(pid, path)
     end
 
+    test "#{inspect(adapter)}: existing files can be updated" do
+      {:ok, pid} = Filesystem.start_link(adapter: unquote(adapter))
+
+      path = "test/fixture/write/test.txt"
+
+      assert {:error, _} = Filesystem.update(pid, path, "Some content")
+
+      Filesystem.write(pid, path, "exists")
+
+      assert :ok = Filesystem.update(pid, path, "Some content")
+      assert {:ok, "Some content"} = Filesystem.read(pid, path)
+    end
+
     test "#{inspect(adapter)}: reading unavailable files results in an error" do
       {:ok, pid} = Filesystem.start_link(adapter: unquote(adapter))
 
@@ -49,6 +62,17 @@ defmodule Depot.FilesystemTest do
 
       assert Filesystem.has(pid, path) == true
     end
+
+    test "#{inspect(adapter)}: deleted files are no longer available" do
+      {:ok, pid} = Filesystem.start_link(adapter: unquote(adapter))
+
+      path = "test/fixture/write/test.txt"
+
+      Filesystem.write(pid, path, "Some content")
+      Filesystem.delete(pid, path)
+
+      assert {:error, _} = Filesystem.read(pid, path)
+    end
   end
 
   test "config is passed to adapter" do
@@ -59,8 +83,6 @@ defmodule Depot.FilesystemTest do
           root: "test/fixture/write"
         }
       )
-
-    path = "test.txt"
 
     Filesystem.write(pid, "test.txt", "Some content")
 

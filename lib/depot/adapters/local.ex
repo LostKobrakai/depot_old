@@ -13,6 +13,16 @@ defmodule Depot.Adapters.Local do
     end
   end
 
+  def update(path, contents, config) do
+    full_path = resolve_path(path, config)
+
+    if File.exists?(full_path) do
+      write(path, contents, config)
+    else
+      {:error, :enoent}
+    end
+  end
+
   def read(path, config) do
     path
     |> resolve_path(config)
@@ -23,6 +33,11 @@ defmodule Depot.Adapters.Local do
     path
     |> resolve_path(config)
     |> File.exists?()
+  end
+
+  def delete(path, config) do
+    full_path = resolve_path(path, config)
+    File.rm(path)
   end
 
   defp resolve_path(path, %{root: root}), do: Path.join(root, path)
